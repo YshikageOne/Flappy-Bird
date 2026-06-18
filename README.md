@@ -1,4 +1,4 @@
-# Flappy Bird + NEAT AI
+# Flappy Bird + NEAT AI By Clyde
 
 A Python recreation of **Flappy Bird** made with [Pygame](https://www.pygame.org/), plus an AI that teaches itself to play using the **NEAT** algorithm.
 
