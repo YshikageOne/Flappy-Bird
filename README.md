@@ -9,7 +9,7 @@ No Python needed — grab a build from [Releases](../../releases):
 | Platform | Version | What you get |
 | --- | --- | --- |
 | Windows | v1.0.0 | `Flappy Bird.exe` — Space to flap. `Flappy Bird AI.exe` — AI plays on its own. |
-| Android | v1.1 | APK — tap the screen to flap. |
+| Android | v1.1.1 | APK — tap the screen to flap. |
 
 ## Modes
 
