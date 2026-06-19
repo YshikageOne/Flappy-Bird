@@ -57,6 +57,28 @@ margin = 120
 gapMin = pipeGap // 2 + margin
 gapMax = floorY - pipeGap // 2 - margin
 
+
+def applyDeviceAspect():
+    #screenWidth stays fixed (keeps pipe spacing/speed feel consistent); screenHeight
+    #stretches to match the real device aspect ratio so there's nothing left over
+    #for the letterbox bars to fill. Call once, before any screens are built.
+    global screenHeight, floorY, gapMax, pipeImgHeight
+
+    winW, winH = Window.size
+    if winW <= 0 or winH <= 0:
+        return
+
+    screenHeight = round(screenWidth * winH / winW)
+    floorY = screenHeight - floorHeight
+    gapMax = floorY - pipeGap // 2 - margin
+    if gapMax < gapMin:
+        gapMax = gapMin
+
+    #pipe art must always reach from the gap to the screen edge, however tall
+    #the device turns out to be
+    pipeImgHeight = screenHeight
+
+
 #assets
 baseDir = os.path.dirname(os.path.abspath(__file__))
 sprites = os.path.join(baseDir, "assets", "sprites")
@@ -154,14 +176,19 @@ class TitleScreen(Screen):
         layout = FloatLayout()
 
         with layout.canvas.before:
+            #black letterbox base, fills any leftover space outside the scaled bg
+            Color(0, 0, 0, 1)
+            self._letterbox = Rectangle(pos=(0, 0), size=Window.size)
+
             Color(1, 1, 1, 1)
             self._bg = CoreImage(os.path.join(sprites, "background-night.png")).texture
             self._bgRect = Rectangle(
-                texture=self._bg, pos=(0, 0), size=Window.size, tex_coords=texNormal
+                texture=self._bg, pos=(0, 0), size=(screenWidth, screenHeight), tex_coords=texNormal
             )
             self._overlayColor = Color(0, 0, 0, self.overlayOpacity)
             self._overlay = Rectangle(pos=(0, 0), size=Window.size)
         Window.bind(size=self._resizeBg)
+        self._resizeBg()
         self.bind(overlayOpacity=self._syncOverlay, titleScale=self._syncTitleScale)
 
         self.titleLabel = Label(
@@ -199,8 +226,15 @@ class TitleScreen(Screen):
         self._titleScaleInstr.origin = self.titleLabel.center
 
     def _resizeBg(self, *_):
-        self._bgRect.size = Window.size
-        self._overlay.size = Window.size
+        winWidth, winHeight = Window.size
+        self._letterbox.size = (winWidth, winHeight)
+
+        scale = min(winWidth / screenWidth, winHeight / screenHeight)
+        w, h = screenWidth * scale, screenHeight * scale
+        self._bgRect.pos = ((winWidth - w) / 2, (winHeight - h) / 2)
+        self._bgRect.size = (w, h)
+
+        self._overlay.size = (winWidth, winHeight)
 
     def _cancelAnims(self):
         if self._sequence:
@@ -437,11 +471,19 @@ class FlappyApp(App):
     title = gameTitle
 
     def build(self):
-        sm = ScreenManager(transition=FadeTransition(duration=0.45))
-        sm.add_widget(TitleScreen())
-        sm.add_widget(GameScreen())
-        sm.current = "title"
-        return sm
+        self.sm = ScreenManager(transition=FadeTransition(duration=0.45))
+        return self.sm
+
+    def on_start(self):
+        #wait one frame so Window.size reflects the real fullscreen
+        #dimensions on Android, not a stale pre-fullscreen value
+        Clock.schedule_once(self._setupScreens, 0)
+
+    def _setupScreens(self, *_):
+        applyDeviceAspect()
+        self.sm.add_widget(TitleScreen())
+        self.sm.add_widget(GameScreen())
+        self.sm.current = "title"
 
 
 if __name__ == "__main__":
