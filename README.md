@@ -45,4 +45,4 @@ shared/       Shared code & assets (settings, bird, pipe, sprites, audio)
 ## Credits
 
 - Assets: [samuelcust/flappy-bird-assets](https://github.com/samuelcust/flappy-bird-assets/tree/master)
-- Inspiration: [Code Bullet](https://www.youtube.com/watch?v=WSW-5m8lRMs&t=141s)
+- Inspiration: [Code Bullet](https://youtu.be/WSW-5m8lRMs)
