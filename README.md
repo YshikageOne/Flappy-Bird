@@ -1,8 +1,19 @@
-# Flappy Bird + NEAT AI By Clyde
+# Flappy Bird + NEAT AI by Clyde
 
 A Python recreation of **Flappy Bird** made with [Pygame](https://www.pygame.org/), plus an AI that teaches itself to play using the **NEAT** algorithm.
 
+## Download
+
+No Python needed — grab a build from [Releases](../../releases):
+
+| Platform | Version | What you get |
+| --- | --- | --- |
+| Windows | v1.0.0 | `Flappy Bird.exe` — Space to flap. `Flappy Bird AI.exe` — AI plays on its own. |
+| Android | v1.1 | APK — tap the screen to flap. |
+
 ## Modes
+
+Run from source with Python 3:
 
 | Mode | Run | What it does |
 | --- | --- | --- |
@@ -11,8 +22,6 @@ A Python recreation of **Flappy Bird** made with [Pygame](https://www.pygame.org
 | Watch | `python neat/play.py` | Watch the trained AI play on its own. |
 
 ## Setup
-
-Requires Python 3 and two packages:
 
 ```bash
 pip install pygame neat-python
@@ -27,7 +36,8 @@ Each bird is run by a small neural network. Every frame it gets 3 inputs (the bi
 ## Project structure
 
 ```
-game/         Human-playable game
+game/         Human-playable game (Pygame)
+android/      Android port (Kivy) — touch to flap
 neat/         AI training + playback (config.txt, winner.pkl)
 shared/       Shared code & assets (settings, bird, pipe, sprites, audio)
 ```
